@@ -18,7 +18,7 @@ import com.example.model.AreaResponse;
 import java.util.List;
 
 public class AreaAdapter extends ArrayAdapter<AreaResponse> {
-    private int defaultImage;
+    private final int defaultImage;
 
     public AreaAdapter(@NonNull Context context, int resource, @NonNull List<AreaResponse> objects) {
         super(context, resource, objects);

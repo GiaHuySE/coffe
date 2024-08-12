@@ -99,7 +99,7 @@ public class SelectTableScreen extends AppCompatActivity {
     private GridView gridView;
     private TableAdapter adapter;
     private TextView header;
-    private List<Table> tableList = new ArrayList<>();
+    private final List<Table> tableList = new ArrayList<>();
     private Button btnBack;
     private DatabaseReference databaseReference;
     private static final String TAG = "SelectTableScreen";

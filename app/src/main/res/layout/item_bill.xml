@@ -5,13 +5,30 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <TextView
-        android:id="@+id/tvProductName"
+    <!-- Vertical LinearLayout to stack Product Name and Discount -->
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_weight="2"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="#F44336" />
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvProductName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="#F44336" />
+
+        <!-- New Discount TextView below Product Name -->
+        <TextView
+            android:id="@+id/tvDiscount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#4CAF50"
+            android:text="Discount" /> <!-- Example text, update dynamically in code -->
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvQuantity"
@@ -33,4 +50,5 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textSize="16sp" />
+
 </LinearLayout>

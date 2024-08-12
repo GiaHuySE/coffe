@@ -31,6 +31,7 @@ public interface ApiService {
     @GET("api/product")
     Call<List<ProductResponse>> getProducts();
 
+    //tạo đơn
     @POST("/api/order")
     Call<OrderResponse> postOrder(@Body OrderRequest orderRequest);
     @GET("api/order/{id}")
@@ -40,7 +41,7 @@ public interface ApiService {
     Call<List<OrderResponseDto>> getOrders();
 
     @POST("/api/order/pay/{id}")
-    Call<Void> pay(@Path("id") int ordetId);
+    Call<Void> pay(@Path("id") int orderId);
 
     @POST("/api/order/update/{id}")
     Call<Void> updateOrderStatus(@Path("id") int orderId, @Body OrderRequest orderRequest);

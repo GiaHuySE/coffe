@@ -24,7 +24,7 @@ import java.util.Locale;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHolder> {
 
-    private List<OrderResponseDto> orderList;
+    private final List<OrderResponseDto> orderList;
     private Context context;
 
     public OrderAdapter(OrderScreen orderScreen, List<OrderResponseDto> orderList) {

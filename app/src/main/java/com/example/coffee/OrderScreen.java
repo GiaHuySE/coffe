@@ -68,7 +68,7 @@ public class OrderScreen extends AppCompatActivity {
 
                     for (OrderResponseDto order : orders) {
                         // Check the status before adding to the list
-                        Log.d("Order", "ID: " + order.getId() + ", Status: " + order.getStatus() + ", Other details: " + order.toString());
+                        Log.d("Order", "ID: " + order.getId() + ", Status: " + order.getStatus() + ", Other details: " + order);
                         if (!"PAY".equals(order.getStatus()) && !"SERVE".equals(order.getStatus())) {
                             orderList.add(order);
                         }

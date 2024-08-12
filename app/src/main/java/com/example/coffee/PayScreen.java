@@ -191,17 +191,18 @@ public class PayScreen extends AppCompatActivity {
         for (OrderDetailDto orderDetail : orderResponse.getOrderDetails()) {
             // Convert price to a double
             double price = Double.parseDouble(orderDetail.getProductDto().getPrice());
-
+            double discount = Double.parseDouble(String.valueOf(orderDetail.getDiscount()));
             // Calculate the total price
-            double totalPrice = orderDetail.getQuantity() * price;
+            double totalPrice = orderDetail.getQuantity() * (price -discount);
             totalAmount += totalPrice;
 
             // Create a new BillItem
             BillItem billItem = new BillItem(
                     orderDetail.getProductDto().getName(),
                     "x" + orderDetail.getQuantity(),
-                    String.format("%.2f", price),
-                    String.format("%.2f", totalPrice)
+                    String.format("%.2f", price ),
+                    String.format("%.2f", totalPrice),
+                    String.format("%.2f", discount)
             );
 
             // Add the BillItem to the list
@@ -211,12 +212,12 @@ public class PayScreen extends AppCompatActivity {
         // Update total amount
         TextView tvTotalAmount = findViewById(R.id.llTotalAmount).findViewById(R.id.totalAmount);
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        currencyFormat.setMaximumFractionDigits(0); // Optional: remove decimal places for VND
+        currencyFormat.setMaximumFractionDigits(0);
 
-// Format the total amount
+
         String formattedTotalAmount = currencyFormat.format(totalAmount);
 
-// Update the TextView with the formatted total amount
+
         tvTotalAmount.setText("TỔNG: " + formattedTotalAmount);
 
         billItemAdapter.notifyDataSetChanged();

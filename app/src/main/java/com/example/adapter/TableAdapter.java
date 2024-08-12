@@ -17,9 +17,9 @@ import com.example.model.Table;
 import java.util.List;
 
 public class TableAdapter extends ArrayAdapter<Table> {
-    private Context mContext;
-    private int mResource;
-    private int mDefaultImageResource; // Resource ID for default image
+    private final Context mContext;
+    private final int mResource;
+    private final int mDefaultImageResource; // Resource ID for default image
 
     public TableAdapter(@NonNull Context context, int resource, @NonNull List<Table> objects) {
         super(context, resource, objects);

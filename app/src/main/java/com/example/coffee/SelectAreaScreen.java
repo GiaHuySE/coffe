@@ -1,8 +1,11 @@
 package com.example.coffee;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -35,6 +38,13 @@ public class SelectAreaScreen extends AppCompatActivity {
     private AreaAdapter adapter;
     private ImageView imageHeader;
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference areasRef = database.getReference("areas");
+        fetchAreas();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +58,8 @@ public class SelectAreaScreen extends AppCompatActivity {
         adapter = new AreaAdapter(this, R.layout.area_item, new ArrayList<>());
         gridView.setAdapter(adapter);
 
-        // Initialize Firebase database reference
-       FirebaseDatabase.getInstance().getReference("areas");
+        // Initialize Firebase da tabase reference
+        FirebaseDatabase.getInstance().getReference("areas");
 
         imageHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +68,8 @@ public class SelectAreaScreen extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference areasRef = database.getReference("areas");
         // Fetch areas from the API
         fetchAreas();
 
@@ -84,15 +95,7 @@ public class SelectAreaScreen extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Data exists in Firebase, use it to populate the GridView
-                    List<AreaResponse> areaResponses = new ArrayList<>();
-                    for (DataSnapshot areaSnapshot : dataSnapshot.getChildren()) {
-                        AreaResponse area = areaSnapshot.getValue(AreaResponse.class);
-                        areaResponses.add(area);
-                    }
-                    adapter.clear();
-                    adapter.addAll(areaResponses);
-                    adapter.notifyDataSetChanged();
+                    getOrderIdAndUpdateIfNeeded(dataSnapshot);
 
                 } else {
                     // Data does not exist in Firebase, fetch from API
@@ -148,5 +151,45 @@ public class SelectAreaScreen extends AppCompatActivity {
         });
     }
 
+    private void getOrderIdAndUpdateIfNeeded(DataSnapshot dataSnapshot) {
+        DatabaseReference areaRef = FirebaseDatabase.getInstance().getReference("areas");
+        areaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot areasSnapshot) {
+                boolean allOrderIdsZero = false;
+
+                for (DataSnapshot areaSnapshot : areasSnapshot.getChildren()) {
+                    for (DataSnapshot tableSnapshot : areaSnapshot.child("tables").getChildren()) {
+                        Integer orderId = tableSnapshot.child("orderId").getValue(Integer.class);
+
+                        if (orderId == null || orderId != 0) {
+                            allOrderIdsZero = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!allOrderIdsZero) {
+                    // All orderIds are 0, so fetch new data from API and save to Firebase
+                    fetchAreasFromApiAndSaveToFirebase(areaRef);
+                } else {
+                    List<AreaResponse> areaResponses = new ArrayList<>();
+                    for (DataSnapshot areaSnapshot : dataSnapshot.getChildren()) {
+                        AreaResponse area = areaSnapshot.getValue(AreaResponse.class);
+                        areaResponses.add(area);
+                    }
+                    adapter.clear();
+                    adapter.addAll(areaResponses);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle potential errors
+                Toast.makeText(SelectAreaScreen.this, "Error fetching data: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
 }

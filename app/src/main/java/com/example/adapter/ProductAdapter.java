@@ -20,8 +20,8 @@ import java.util.Locale;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private List<ProductResponse> products;
-    private CartListener cartListener;
+    private final List<ProductResponse> products;
+    private final CartListener cartListener;
 
     public ProductAdapter(List<ProductResponse> products, CartListener cartListener) {
         this.products = products;
@@ -51,10 +51,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
-        private TextView productName, productPrice, productAmount;
+        private final TextView productName;
+        private final TextView productPrice;
+        private final TextView productAmount;
         private ImageView productImage;
-        private Button btnAdd;
-        private ImageView btnMinus, btnPlus;
+        private final Button btnAdd;
+        private final ImageView btnMinus;
+        private final ImageView btnPlus;
 
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);

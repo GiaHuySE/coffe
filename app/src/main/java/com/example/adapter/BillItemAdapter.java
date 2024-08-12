@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class BillItemAdapter extends RecyclerView.Adapter<BillItemAdapter.ViewHolder> {
-    private List<BillItem> billItems;
+    private final List<BillItem> billItems;
 
     public BillItemAdapter(List<BillItem> billItems) {
         this.billItems = billItems;
@@ -35,7 +35,7 @@ public class BillItemAdapter extends RecyclerView.Adapter<BillItemAdapter.ViewHo
         BillItem item = billItems.get(position);
         holder.tvProductName.setText(item.getProductName());
         holder.tvQuantity.setText(item.getQuantity());
-
+        holder.tvDiscount.setText("Discount: "+formatPriceToVND(Double.parseDouble(item.getDiscount())));
         // Format prices for display
         holder.tvUnitPrice.setText(formatPriceToVND(Double.parseDouble(item.getUnitPrice())));
         holder.tvTotalPrice.setText(formatPriceToVND(Double.parseDouble(item.getTotalPrice())));
@@ -52,10 +52,9 @@ public class BillItemAdapter extends RecyclerView.Adapter<BillItemAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvProductName;
-        TextView tvQuantity;
-        TextView tvUnitPrice;
-        TextView tvTotalPrice;
+        TextView tvProductName,tvTotalPrice,tvUnitPrice,tvQuantity,tvDiscount;
+
+
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +62,7 @@ public class BillItemAdapter extends RecyclerView.Adapter<BillItemAdapter.ViewHo
             tvQuantity = itemView.findViewById(R.id.tvQuantity);
             tvUnitPrice = itemView.findViewById(R.id.tvUnitPrice);
             tvTotalPrice = itemView.findViewById(R.id.tvTotalPrice);
+            tvDiscount = itemView.findViewById(R.id.tvDiscount);
         }
     }
 }

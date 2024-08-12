@@ -1,16 +1,18 @@
 package com.example.model;
 
 public class BillItem {
-    private String productName;
-    private String quantity;
-    private String unitPrice;
-    private String totalPrice;
+    private final String productName;
+    private final String quantity;
+    private final String unitPrice;
+    private final String totalPrice;
+    private  final String discount;
 
-    public BillItem(String productName, String quantity, String unitPrice, String totalPrice) {
+    public BillItem(String productName, String quantity, String unitPrice, String totalPrice, String discount) {
         this.productName = productName;
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
+        this.discount = discount;
     }
 
     // Getters and setters
@@ -28,5 +30,9 @@ public class BillItem {
 
     public String getTotalPrice() {
         return totalPrice;
+    }
+
+    public String getDiscount() {
+        return discount;
     }
 }

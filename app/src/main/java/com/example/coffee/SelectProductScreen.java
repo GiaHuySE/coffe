@@ -56,8 +56,8 @@ public class SelectProductScreen extends AppCompatActivity implements ProductAda
     private RecyclerView recyclerViewProducts;
     private ProductAdapter adapter;
     private Button btnCheckout, btnOrder ,btnChuyenBan,btnBack;
-    private List<ProductResponse> productList = new ArrayList<>();
-    private Map<ProductResponse, Integer> cart = new HashMap<>();
+    private final List<ProductResponse> productList = new ArrayList<>();
+    private final Map<ProductResponse, Integer> cart = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,37 +196,37 @@ public class SelectProductScreen extends AppCompatActivity implements ProductAda
     }
 
 
-    private void getOrderId(int areaId, int tableId, final OnOrderIdReceivedListener listener) {
-        DatabaseReference areaRef = FirebaseDatabase.getInstance().getReference(AREA_REF);
-        areaRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot areasSnapshot) {
-                for (DataSnapshot areaSnapshot : areasSnapshot.getChildren()) {
-                    Integer areaIdFromDb = areaSnapshot.child("id").getValue(Integer.class);
-                    if (areaIdFromDb != null && areaIdFromDb.equals(areaId)) {
-                        for (DataSnapshot tableSnapshot : areaSnapshot.child("tables").getChildren()) {
-                            Integer tableIdFromDb = tableSnapshot.child("id").getValue(Integer.class);
-                            if (tableIdFromDb != null && tableIdFromDb.equals(tableId)) {
-                                Integer orderId = tableSnapshot.child("orderId").getValue(Integer.class);
-                                Log.d("id", String.valueOf(orderId));
-                                listener.onOrderIdReceived(orderId != null ? orderId : -1);
-                                return;
+        private void getOrderId(int areaId, int tableId, final OnOrderIdReceivedListener listener) {
+            DatabaseReference areaRef = FirebaseDatabase.getInstance().getReference(AREA_REF);
+            areaRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot areasSnapshot) {
+                    for (DataSnapshot areaSnapshot : areasSnapshot.getChildren()) {
+                        Integer areaIdFromDb = areaSnapshot.child("id").getValue(Integer.class);
+                        if (areaIdFromDb != null && areaIdFromDb.equals(areaId)) {
+                            for (DataSnapshot tableSnapshot : areaSnapshot.child("tables").getChildren()) {
+                                Integer tableIdFromDb = tableSnapshot.child("id").getValue(Integer.class);
+                                if (tableIdFromDb != null && tableIdFromDb.equals(tableId)) {
+                                    Integer orderId = tableSnapshot.child("orderId").getValue(Integer.class);
+                                    Log.d("id", String.valueOf(orderId));
+                                    listener.onOrderIdReceived(orderId != null ? orderId : -1);
+                                    return;
+                                }
                             }
+                            listener.onOrderIdReceived(-1);
+                            return;
                         }
-                        listener.onOrderIdReceived(-1);
-                        return;
                     }
+                    listener.onOrderIdReceived(-1); // Area not found
                 }
-                listener.onOrderIdReceived(-1); // Area not found
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e(TAG, "Failed to get order ID", databaseError.toException());
-                listener.onOrderIdReceived(-1);
-            }
-        });
-    }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e(TAG, "Failed to get order ID", databaseError.toException());
+                    listener.onOrderIdReceived(-1);
+                }
+            });
+        }
 
 
     private void proceedToPayScreen() {
@@ -277,7 +277,7 @@ public class SelectProductScreen extends AppCompatActivity implements ProductAda
                             } else {
                                 try {
                                     String errorMessage = response.errorBody().string();
-                                    Log.e(TAG, "Error placing order: " + errorMessage);
+                                    Log.e("error", "Error placing order: " + errorMessage);
                                     Toast.makeText(SelectProductScreen.this, "Gọi món thất bại" , Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
                                     Log.e(TAG, "Error parsing error response", e);
