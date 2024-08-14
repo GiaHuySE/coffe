@@ -171,9 +171,9 @@ public class PayScreen extends AppCompatActivity {
     }
 
     private void updateUIWithOrderDetails(OrderResponseDto orderResponse) {
-        // Define date format patterns
-        SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-        SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+        // Define date format patterns using the Vietnam locale
+        SimpleDateFormat apiDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", new Locale("vi", "VN"));
+        SimpleDateFormat displayDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", new Locale("vi", "VN"));
 
         // Update the TextViews with the order details
         String userInName = orderResponse.getUserIn().getFirstName();
@@ -193,15 +193,14 @@ public class PayScreen extends AppCompatActivity {
             double price = Double.parseDouble(orderDetail.getProductDto().getPrice());
             double discount = Double.parseDouble(String.valueOf(orderDetail.getDiscount()));
             // Calculate the total price
-            double totalPrice = orderDetail.getQuantity() * (price -discount);
+            double totalPrice = (orderDetail.getQuantity() * price) -price ;
             totalAmount += totalPrice;
-
             // Create a new BillItem
             BillItem billItem = new BillItem(
                     orderDetail.getProductDto().getName(),
                     "x" + orderDetail.getQuantity(),
-                    String.format("%.2f", price ),
-                    String.format("%.2f", totalPrice),
+                    String.format("%.2f", price),
+                    String.format("%.2f", totalPrice ),
                     String.format("%.2f", discount)
             );
 
@@ -214,14 +213,13 @@ public class PayScreen extends AppCompatActivity {
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         currencyFormat.setMaximumFractionDigits(0);
 
-
         String formattedTotalAmount = currencyFormat.format(totalAmount);
-
 
         tvTotalAmount.setText("TỔNG: " + formattedTotalAmount);
 
         billItemAdapter.notifyDataSetChanged();
     }
+
 
     private void makePayment(int orderId) {
         ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
